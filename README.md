@@ -57,6 +57,9 @@ will need to do this whenever the tokens for manager and barista expire
 permissions header seems to be working
 
 
+Using auth0 debugger to get new tokens!! Will have to change callback url to other one when I need to
+
+
 
 
 
