@@ -128,8 +128,8 @@ The api will return 4 error types when requests fail:
 1. [GET /drinks](#get-drinks "Goto get-drinks")
 2. [GET /drinks-detail](#get-drinks-detail "Goto get-drinksdetail")
 3. [POST /drinks](#post-drinks "Goto post-drinks")
-4. [PATCH /drinks/<id>](#patch-drinks_id "Goto patch-drinks_id")
-5. [DELETE /drinks/<id>](#delete-drinks_id "Goto delete-drinks_id")
+4. [PATCH /drinks/{id}](#patch-drinksid "Goto patch-drinks_id")
+5. [DELETE /drinks/{id}](#delete-drinksid "Goto delete-drinks_id")
 
 ## Endpoints
 ### GET /drinks
