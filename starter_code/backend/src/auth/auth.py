@@ -99,14 +99,14 @@ def check_permissions(permission, payload):
     !!NOTE urlopen has a common certificate error described here: https://stackoverflow.com/questions/50236117/scraping-ssl-certificate-verify-failed-error-for-http-en-wikipedia-org
 '''
 def verify_decode_jwt(token):
-    # GET THE PUBLIC KEY FROM AUTH0
+    # get key from auth0
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jwks = json.loads(jsonurl.read())
     
-    # GET THE DATA IN THE HEADER
+    # get header
     unverified_header = jwt.get_unverified_header(token)
     
-    # CHOOSE OUR KEY
+    # choose key
     rsa_key = {}
     if 'kid' not in unverified_header:
         raise AuthError({
@@ -124,10 +124,10 @@ def verify_decode_jwt(token):
                 'e': key['e']
             }
 
-    # Finally, verify!!!
+    # verify
     if rsa_key:
         try:
-            # USE THE KEY TO VALIDATE THE JWT
+            # use key to validate jwt
             payload = jwt.decode(
                 token,
                 rsa_key,
