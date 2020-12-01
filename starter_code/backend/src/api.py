@@ -95,7 +95,7 @@ def create_drink(payload):
             'success': True,
             'drinks': drinks
         })
-    except:
+    except Exception as e:
         abort(422)
 
 
@@ -141,7 +141,7 @@ def update_drink(payload, drink_id):
             'success': True,
             'drinks': drinks
         })
-    except:
+    except Exception as e:
         abort(422)  # error out if encounter exceptin
 
 
@@ -159,26 +159,30 @@ def update_drink(payload, drink_id):
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
 def delete_drink(payload, drink_id):
-    # grab the one we want to delete
-    drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
+    try:
 
-    # error check if none with that id exist
-    if drinks is None:
-        abort(404)
+        # grab the one we want to delete
+        drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
-    # delete and commit
-    drinks.delete()
+        # error check if none with that id exist
+        if drinks is None:
+            abort(404)
 
-    # check to make sure its gone
-    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
-    # check if null here
-    if drink:
-        abort(404)
+        # delete and commit
+        drinks.delete()
 
-    return jsonify({
-        'success': True,
-        'delete': drink_id
-    })
+        # check to make sure its gone
+        drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+        # check if null here
+        if drink:
+            abort(404)
+
+        return jsonify({
+            'success': True,
+            'delete': drink_id
+        })
+    except Exception as e:
+        abort(422)  # error out if encounter exception
 
 
 # Error Handling
