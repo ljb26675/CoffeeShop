@@ -100,8 +100,7 @@ By default, the frontend will run on http://localhost:8100/
 In order to run tests navigate to the backend folder and import this postman collection:
 `starter_code/backend/udacity-fsnd-udaspicelatte.postman_collection.json`
 
-You will need to right click on the manager and barista folders -> edit, to update their jwt to the one you get 
-when you login to the app. They expire after some time.
+The manager and barista folders are set up to contain a valid jwt token for testing.
 
 ## API Reference
 
@@ -127,7 +126,7 @@ The api will return 4 error types when requests fail:
 
 ## Endpoints Glossary
 1. [GET /drinks](#get-drinks "Goto get-drinks")
-2. [GET /drinks-detail](#get-drinksdetail "Goto get-drinksdetail")
+2. [GET /drinks-detail](#get-drinks-detail "Goto get-drinksdetail")
 3. [POST /drinks](#post-drinks "Goto post-drinks")
 4. [PATCH /drinks/<id>](#patch-drinks_id "Goto patch-drinks_id")
 5. [DELETE /drinks/<id>](#delete-drinks_id "Goto delete-drinks_id")
@@ -192,7 +191,7 @@ POST `http://localhost:5000/drinks` ...
 }
 ```
 
-### PATCH /drinks/<id>
+### PATCH /drinks/{id}
 - General:
     - Returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink or appropriate status code indicating reason for failure
     - Authorized users: managers 
@@ -215,7 +214,7 @@ PATCH `http://localhost:5000/drinks/7` ...
 }
 ```
 
-### DELETE /drinks/<id>
+### DELETE /drinks/{id}
 - General:
     - Returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
     or appropriate status code indicating reason for failure
