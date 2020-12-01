@@ -122,9 +122,27 @@ def create_drink(payload):
 @requires_auth('patch:drinks')
 def update_drink(payload, drink_id):
 
+    # get drink to update
+    drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
+
+    #update it
+    body = request.get_json()
+    req_title = body.get('title', None)
+    req_recipe = body.get('recipe', None)
+
+    if(req_title):
+        drinks.title = req_title
+
+    if(req_recipe):
+        drinks.recipe = json.dumps(req_recipe)
+
+    drinks.update()
+
+    drinks = drinks.long()
+
     return jsonify({
         'success': True,
-        'drinks': []
+        'drinks': drinks
     })
 
 
