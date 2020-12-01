@@ -199,10 +199,10 @@ def not_found(error):
 '''
 Error Handler for AuthError
 '''
-""" @app.errorhandler(AuthError)
+@app.errorhandler(AuthError)
 def unauthorized(error):
     return jsonify({
         "success": False,
         "error": 401,
         "message": "Unauthorized"
-    }), 401 """
+    }), 401
