@@ -34,9 +34,10 @@ def get_drinks():
 
     drinks = [drink.short() for drink in Drink.query.all() if drink]
 
-    """ if drinks is None:
-            abort(404)
-    else: """
+    if drinks is None:
+        abort(404)
+
+
     return jsonify({
         'success': True,
         'drinks': drinks
@@ -59,6 +60,9 @@ def get_drinks_details(payload):
 
     drinks = [drink.long() for drink in Drink.query.all() if drink]
 
+    if drinks is None:
+        abort(404)
+
     return jsonify({
         'success': True,
         'drinks': drinks
@@ -79,31 +83,23 @@ def get_drinks_details(payload):
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def create_drink(payload):
+    try:
+        body = request.get_json()
+        req_title = body.get('title', None)
+        req_recipe = body.get('recipe', None)
 
-    """ body = request.get_json()
+        drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
+        drink.insert()
 
-    req_title = body.get('title', None)
-    req_recipe = body.get('recipe', None)
+        drinks = Drink.query.filter(Drink.title == req_title).one_or_none()
+        drinks = drinks.long()
 
-    drink = Drink(title=req_title, recipe=req_recipe) """ 
-
-    body = request.get_json()
-    req_title = body.get('title', None)
-    req_recipe = body.get('recipe', None)
-
-    drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
-    drink.insert()
-
-    drinks = Drink.query.filter(Drink.title == req_title).one_or_none()
-    drinks = drinks.long()
-
-    #drink = body.get('drink', None)
-
-    return jsonify({
-        'success': True,
-        'drinks': drinks
-    })
-
+        return jsonify({
+            'success': True,
+            'drinks': drinks
+        })
+    except:
+        abort(422)
 
 '''
 @TODO implement endpoint
@@ -116,34 +112,38 @@ def create_drink(payload):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-
-
 @app.route('/drinks/<int:drink_id>', methods=['PATCH'])
 @requires_auth('patch:drinks')
 def update_drink(payload, drink_id):
+    try: 
+        # get drink to update
+        drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
-    # get drink to update
-    drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
+        # error check if none with that id exist
+        if drinks is None:
+            abort(404)
 
-    #update it
-    body = request.get_json()
-    req_title = body.get('title', None)
-    req_recipe = body.get('recipe', None)
+        #update it
+        body = request.get_json()
+        req_title = body.get('title', None)
+        req_recipe = body.get('recipe', None)
 
-    if(req_title):
-        drinks.title = req_title
+        if req_title:
+            drinks.title = req_title
 
-    if(req_recipe):
-        drinks.recipe = json.dumps(req_recipe)
+        if req_recipe:
+            drinks.recipe = json.dumps(req_recipe)
 
-    drinks.update()
+        drinks.update()
 
-    drinks = drinks.long()
+        drinks = drinks.long()
 
-    return jsonify({
-        'success': True,
-        'drinks': drinks
-    })
+        return jsonify({
+            'success': True,
+            'drinks': drinks
+        })
+    except:
+        abort(422) #error out if encounter exceptin
 
 
 '''
@@ -164,12 +164,18 @@ def delete_drink(payload, drink_id):
     # grab the one we want to delete
     drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
+    # error check if none with that id exist
+    if drinks is None:
+        abort(404)
+
     # delete and commit
     drinks.delete()
 
     # check to make sure its gone
     drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
     # check if null here
+    if drink:
+        abort(404)
 
     return jsonify({
         'success': True,
@@ -181,8 +187,6 @@ def delete_drink(payload, drink_id):
 '''
 Example error handling for unprocessable entity
 '''
-
-
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({

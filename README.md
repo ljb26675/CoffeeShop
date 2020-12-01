@@ -31,7 +31,9 @@ https://github.com/udacity/FSND/blob/master/projects/03_coffee_shop_full_stack/s
 
 https://lb-fullstack.us.auth0.com/authorize?audience=drink&response_type=token&client_id=xWmsdCdfrXsYMd2qwMtCpuyqlwu3CL0X&redirect_uri=http://127.0.0.1:8080/login-results
 
-
+running frontend
+cd to frontend
+ionic serve (make sure ionic downloaded)
 
 WORKING ON?
  - currently working on making sure the api calls actually work, like for adding a drink
