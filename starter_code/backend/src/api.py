@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
 from flask_cors import CORS
+import json
 
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
@@ -16,7 +17,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-db_drop_and_create_all()
+#db_drop_and_create_all()
 
 # ROUTES
 '''
@@ -28,13 +29,17 @@ db_drop_and_create_all()
         or appropriate status code indicating reason for failure
 '''
 
-
 @app.route('/drinks', methods=['GET'])
 def get_drinks():
 
+    drinks = [drink.short() for drink in Drink.query.all() if drink]
+
+    """ if drinks is None:
+            abort(404)
+    else: """
     return jsonify({
         'success': True,
-        'drinks': []
+        'drinks': drinks
     })
 
 
@@ -52,9 +57,11 @@ def get_drinks():
 @requires_auth('get:drinks-detail')
 def get_drinks_details(payload):
 
+    drinks = [drink.long() for drink in Drink.query.all() if drink]
+
     return jsonify({
         'success': True,
-        'drinks': []
+        'drinks': drinks
     })
 
 
@@ -73,9 +80,28 @@ def get_drinks_details(payload):
 @requires_auth('post:drinks')
 def create_drink(payload):
 
+    """ body = request.get_json()
+
+    req_title = body.get('title', None)
+    req_recipe = body.get('recipe', None)
+
+    drink = Drink(title=req_title, recipe=req_recipe) """ 
+
+    body = request.get_json()
+    req_title = body.get('title', None)
+    req_recipe = body.get('recipe', None)
+
+    drink = Drink(title=req_title, recipe=json.dumps(req_recipe))
+    drink.insert()
+
+    drinks = Drink.query.filter(Drink.title == req_title).one_or_none()
+    drinks = drinks.long()
+
+    #drink = body.get('drink', None)
+
     return jsonify({
         'success': True,
-        'drinks': []
+        'drinks': drinks
     })
 
 
@@ -117,10 +143,14 @@ def update_drink(payload, drink_id):
 @app.route('/drinks/<int:drink_id>', methods=['DELETE'])
 @requires_auth('delete:drinks')
 def delete_drink(payload, drink_id):
+    drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
+    drinks.delete()
+
+    drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
     return jsonify({
         'success': True,
-        'drinks': []
+        'drinks': drink
     })
 
 
