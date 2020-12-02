@@ -257,4 +257,4 @@ def server_error(error):
         "success": False,
         "error": 500,
         "message": "internal server error"
-    }), 405
+    }), 500
