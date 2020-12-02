@@ -24,7 +24,8 @@ uncomment the following line to initialize the datbase
     GET /drinks
         it should be a public endpoint
         it should contain only the drink.short() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+    returns status code 200 and json {"success": True, "drinks": drinks}
+    where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
 
@@ -33,9 +34,6 @@ uncomment the following line to initialize the datbase
 def get_drinks():
 
     drinks = [drink.short() for drink in Drink.query.all() if drink]
-
-    if drinks is None:
-        abort(404)
 
     return jsonify({
         'success': True,
@@ -47,7 +45,8 @@ def get_drinks():
     GET /drinks-detail
         it should require the 'get:drinks-detail' permission
         it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
+        returns status code 200 and json {"success": True, "drinks": drinks}
+        where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
 
@@ -72,7 +71,8 @@ def get_drinks_details(payload):
         it should create a new row in the drinks table
         it should require the 'post:drinks' permission
         it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
+    returns status code 200 and json {"success": True, "drinks": drink}
+     where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
 
@@ -106,7 +106,9 @@ def create_drink(payload):
         it should update the corresponding row for <id>
         it should require the 'patch:drinks' permission
         it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
+        returns status code 200 and json
+        {"success": True, "drinks": drink}
+        where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
 
@@ -137,9 +139,12 @@ def update_drink(payload, drink_id):
 
         drinks = drinks.long()
 
+        array = []
+        array.push(drinks)
+
         return jsonify({
             'success': True,
-            'drinks': drinks
+            'drinks': array
         })
     except Exception as e:
         abort(422)  # error out if encounter exceptin
@@ -151,7 +156,8 @@ def update_drink(payload, drink_id):
         it should respond with a 404 error if <id> is not found
         it should delete the corresponding row for <id>
         it should require the 'delete:drinks' permission
-    returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
+        returns status code 200 and json {"success": True, "delete": id}
+        where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
 
@@ -160,7 +166,6 @@ def update_drink(payload, drink_id):
 @requires_auth('delete:drinks')
 def delete_drink(payload, drink_id):
     try:
-
         # grab the one we want to delete
         drinks = Drink.query.filter(Drink.id == drink_id).one_or_none()
 
