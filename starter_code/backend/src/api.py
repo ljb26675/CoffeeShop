@@ -133,14 +133,17 @@ def update_drink(payload, drink_id):
             drinks.title = req_title
 
         if req_recipe:
-            drinks.recipe = json.dumps(req_recipe)
+            drinks.recipe = (
+                req_recipe if type(req_recipe) == str
+                else json.dumps(req_recipe)
+                )
 
         drinks.update()
 
         drinks = drinks.long()
 
         array = []
-        array.push(drinks)
+        array.append(drinks)
 
         return jsonify({
             'success': True,
